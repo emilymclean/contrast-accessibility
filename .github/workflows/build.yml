@@ -53,7 +53,7 @@ jobs:
       with:
         arguments: build
     - name: Rename AAR
-      run: mv ./build/libs/contrast-accessibility.jar ./contrast-accessibility.jar
+      run: mv ./build/libs/contrast-accessibility-${{ needs.version.outputs.version }}.jar ./contrast-accessibility.jar
     - uses: actions/upload-artifact@master
       with:
         name: contrast-accessibility-jar
