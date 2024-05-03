@@ -1,0 +1,12 @@
+amends "pkl/render.pkl"
+
+_modules = new Listing {
+    "standardbutton"
+}
+workflows = new Listing {
+    (import("pkl/build.pkl")) {
+        projectName = "contrast-accessibility"
+    }
+    import("pkl/lint.pkl")
+    import("pkl/test.pkl")
+}
