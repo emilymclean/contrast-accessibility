@@ -1,0 +1,54 @@
+plugins {
+    id 'java'
+    id 'net.thebugmc.gradle.sonatype-central-portal-publisher' version '1.2.3'
+    id 'nebula.lint' version '17.8.0'
+}
+
+group = 'cl.emilym'
+description = "Provides a utility class for checking contrast accessibility between colors and calculating contrast ratios using the standards defined in WCAG 2.1."
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.0'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
+}
+
+test {
+    useJUnitPlatform()
+    testLogging.showStandardStreams = true
+}
+
+centralPortal {
+    username = findProperty("sonatypeUsername")
+    password = findProperty("sonatypePassword")
+    name = "contrast-accessibility"
+    pom {
+        url = findProperty("pom.url")
+        licenses {
+            license {
+                name = findProperty("pom.license.name")
+                url = findProperty("pom.license.url")
+            }
+        }
+        developers {
+            developer {
+                name = findProperty("pom.developer.name")
+                email = findProperty("pom.developer.email")
+            }
+        }
+        scm {
+            connection = findProperty("pom.scm.connection")
+            developerConnection = findProperty("pom.scm.developerConnection")
+            url = findProperty("pom.scm.url")
+        }
+    }
+}
+
+signing {
+    def signingKey = findProperty("signingKey")
+    def signingPassword = findProperty("signingPassword")
+    useInMemoryPgpKeys(signingKey, signingPassword)
+}
