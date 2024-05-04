@@ -3,7 +3,7 @@
 [![Lint](https://github.com/BenMMcLean/contrast-accessibility/actions/workflows/lint.yml/badge.svg)](https://github.com/BenMMcLean/contrast-accessibility/actions/workflows/lint.yml)
 [![Test](https://github.com/BenMMcLean/contrast-accessibility/actions/workflows/test.yml/badge.svg)](https://github.com/BenMMcLean/contrast-accessibility/actions/workflows/test.yml)
 
-A library providing the famous ["human readable bytes" StackOverflow answer](https://stackoverflow.com/questions/3758606/how-can-i-convert-byte-size-into-a-human-readable-format-in-java).
+Provides a utility class for checking contrast accessibility between colors and calculating contrast ratios using the standards defined in WCAG 2.1.
 
 ## Installation
 ![Stable](https://img.shields.io/github/v/release/BenMMcLean/contrast-accessibility?label=Stable)

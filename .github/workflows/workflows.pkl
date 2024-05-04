@@ -6,6 +6,7 @@ _modules = new Listing {
 workflows = new Listing {
     (import("pkl/build.pkl")) {
         projectName = "contrast-accessibility"
+        javadocEnabled = true
     }
     import("pkl/lint.pkl")
     import("pkl/test.pkl")
