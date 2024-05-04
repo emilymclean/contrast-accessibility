@@ -154,7 +154,7 @@ jobs:
     - name: Setup Gradle
       uses: gradle/actions/setup-gradle@v3
     - name: Javadoc with Gradle
-      run: ./repository/gradlew javadoc
+      run: cd ./repository/ && ./gradlew javadoc
     - name: Move to GH Pages Branch
       run: mv ./repository/build/docs/javadoc/* ./pages/javadoc/v${{ needs.version.outputs.version }}/
     - name: Generate Directory Listings
