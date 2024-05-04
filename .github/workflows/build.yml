@@ -158,6 +158,7 @@ jobs:
       run: |-
         mkdir --parents ./pages/javadoc/v${{ needs.version.outputs.version }}/
         mv ./repository/build/docs/javadoc/* ./pages/javadoc/v${{ needs.version.outputs.version }}/
+        rm ./pages/javadoc/index.html
     - name: Generate Directory Listings
       uses: jayanta525/github-pages-directory-listing@v4.0.0
       with:
