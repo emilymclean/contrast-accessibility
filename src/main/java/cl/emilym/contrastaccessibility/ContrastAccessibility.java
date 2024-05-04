@@ -1,7 +1,9 @@
 package cl.emilym.contrastaccessibility;
 
 /**
- *
+ * Utility class for checking contrast accessibility between colors and calculating contrast ratios using the standards
+ *  defined in WCAG 2.1.
+ * @see <a href="https://www.w3.org/TR/WCAG21">WCAG 2.1</a>
  */
 public class ContrastAccessibility {
 
