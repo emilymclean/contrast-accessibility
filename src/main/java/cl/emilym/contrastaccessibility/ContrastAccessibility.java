@@ -72,22 +72,34 @@ public class ContrastAccessibility {
      * @see <a href="https://www.w3.org/TR/WCAG21/#dfn-relative-luminance">WCAG 2.1 Relative Luminance</a>
      */
     public static double luminance(long color) {
-        double[] channels = new double[]{
-            ((color >> RED_SHIFT) & CHANNEL_MASK) / DOUBLE_DENOMINATOR,
-            ((color >> GREEN_SHIFT) & CHANNEL_MASK) / DOUBLE_DENOMINATOR,
-            ((color >> BLUE_SHIFT) & CHANNEL_MASK) / DOUBLE_DENOMINATOR
-        };
+        double[] channels = separateChannels(color);
 
         for (int i = 0; i < channels.length; i++) {
             double channel = channels[i];
             if (channel < 0.04045) {
-                channels[i] /= 12.92;
+                channel /= 12.92;
             } else {
-                channels[i] = Math.pow((channel + 0.055) / 1.055, 2.4);
+                channel = Math.pow((channel + 0.055) / 1.055, 2.4);
             }
+            channels[i] = channel;
         }
 
-        return ((0.2126 * channels[0]) + (0.7152 * channels[1]) + (0.0722 * channels[2]));
+        return calculateLuminance(channels);
+    }
+
+    private static double calculateLuminance(double[] channels) {
+        return (0.2126 * channels[0]) + (0.7152 * channels[1]) + (0.0722 * channels[2]);
+    }
+
+    private static double[] separateChannels(long color) {
+        int[] shifts = new int[]{ RED_SHIFT, GREEN_SHIFT, BLUE_SHIFT };
+        double[] channels = new double[shifts.length];
+
+        for (int i = 0; i < channels.length; i++) {
+            channels[i] = ((color >> shifts[i]) & CHANNEL_MASK) / DOUBLE_DENOMINATOR;
+        }
+
+        return channels;
     }
 
 }
