@@ -1,13 +1,13 @@
-amends "pkl/render.pkl"
+amends "package://components.emilym.cl/actions-java/actions-java@1.0.4#/render.pkl"
 
 _modules = new Listing {
     "standardbutton"
 }
 workflows = new Listing {
-    (import("pkl/build.pkl")) {
+    (import("package://components.emilym.cl/actions-java/actions-java@1.0.4#/build.pkl")) {
         projectName = "contrast-accessibility"
         javadocEnabled = true
     }
-    import("pkl/lint.pkl")
-    import("pkl/test.pkl")
+    import("package://components.emilym.cl/actions-java/actions-java@1.0.4#/lint.pkl")
+    import("package://components.emilym.cl/actions-java/actions-java@1.0.4#/test.pkl")
 }

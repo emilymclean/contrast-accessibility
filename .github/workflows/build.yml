@@ -18,16 +18,16 @@ jobs:
       version: ${{ steps.gitversion.outputs.semVer }}
       versionCode: ${{ steps.run_number.outputs.versionCode }}
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
       with:
         fetch-depth: 0
     - name: Install GitVersion
-      uses: gittools/actions/gitversion/setup@v0.9.6
+      uses: gittools/actions/gitversion/setup@v3.0.0
       with:
         versionSpec: 5.x
     - id: gitversion
       name: Use GitVersion
-      uses: gittools/actions/gitversion/execute@v0.9.6
+      uses: gittools/actions/gitversion/execute@v3.0.0
       with:
         useConfigFile: true
         configFilePath: ./gitversion.yml
@@ -38,23 +38,23 @@ jobs:
     - version
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
       with:
         fetch-depth: 0
     - name: Set up JDK 17
-      uses: actions/setup-java@v3
+      uses: actions/setup-java@v4
       with:
         java-version: '17'
         distribution: temurin
+    - name: Setup gradle
+      uses: gradle/actions/setup-gradle@v3
     - name: Build with Gradle
       env:
         ORG_GRADLE_PROJECT_version: ${{ needs.version.outputs.version }}
-      uses: gradle/gradle-build-action@67421db6bd0bf253fb4bd25b31ebb98943c375e1
-      with:
-        arguments: build
+      run: ./gradlew build
     - name: Rename AAR
-      run: mv ./build/libs/contrast-accessibility-${{ needs.version.outputs.version }}.jar ./contrast-accessibility.jar
-    - uses: actions/upload-artifact@master
+      run: mv ./build/libs/*.jar ./contrast-accessibility.jar
+    - uses: actions/upload-artifact@v4
       with:
         name: contrast-accessibility-jar
         path: ./contrast-accessibility.jar
@@ -68,9 +68,13 @@ jobs:
     outputs:
       upload_url: ${{ steps.create_release.outputs.upload_url }}
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
       with:
         fetch-depth: 0
+    - name: Create tag for release
+      uses: rickstaa/action-create-tag@v1
+      with:
+        tag: v${{ needs.version.outputs.version }}
     - id: create_release
       name: Create Release
       uses: softprops/action-gh-release@v2
@@ -87,14 +91,14 @@ jobs:
     - build
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/download-artifact@master
+    - uses: actions/download-artifact@v4
       with:
         name: contrast-accessibility-jar
         path: ./
     - name: Upload Artifact to Release
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      uses: actions/upload-release-asset@v1
+      uses: shogo82148/actions-upload-release-asset@v1
       with:
         upload_url: ${{ needs.release.outputs.upload_url }}
         asset_path: ./contrast-accessibility.jar
@@ -108,29 +112,29 @@ jobs:
     if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
       with:
         fetch-depth: 0
     - name: Set up JDK 17
-      uses: actions/setup-java@v3
+      uses: actions/setup-java@v4
       with:
         java-version: '17'
         distribution: temurin
+    - name: Setup gradle
+      uses: gradle/actions/setup-gradle@v3
     - name: Build with Gradle
       env:
         ORG_GRADLE_PROJECT_sonatypePassword: ${{ secrets.SONATYPE_PASSWORD }}
         ORG_GRADLE_PROJECT_sonatypeUsername: ${{ secrets.SONATYPE_USERNAME }}
         ORG_GRADLE_PROJECT_signingKey: ${{ secrets.PGP_SECRET }}
         ORG_GRADLE_PROJECT_signingPassword: ${{ secrets.PGP_PASSPHRASE }}
-      uses: gradle/gradle-build-action@67421db6bd0bf253fb4bd25b31ebb98943c375e1
-      with:
-        arguments: |-
-          -Pversion=${{ needs.version.outputs.version }} 
-          -Ppom.url="https://github.com/${{ github.repository }}" 
-          -Ppom.scm.connection="scm:git:git://github.com/${{ github.repository }}" 
-          -Ppom.scm.developerConnection="scm:git:ssh://github.com/${{ github.repository }}" 
-          -Ppom.scm.url="https://github.com/${{ github.repository }}" 
-          publishToCentralPortal --no-daemon
+      run: |-
+        ./gradlew -Pversion=${{ needs.version.outputs.version }} 
+        -Ppom.url="https://github.com/${{ github.repository }}" 
+        -Ppom.scm.connection="scm:git:git://github.com/${{ github.repository }}" 
+        -Ppom.scm.developerConnection="scm:git:ssh://github.com/${{ github.repository }}" 
+        -Ppom.scm.url="https://github.com/${{ github.repository }}" 
+        publishToCentralPortal --no-daemon
   publish-javadoc:
     permissions:
       contents: write
@@ -138,15 +142,15 @@ jobs:
     - version
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
       with:
         path: repository
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
       with:
         ref: gh-pages
         path: pages
     - name: Set up JDK 17
-      uses: actions/setup-java@v3
+      uses: actions/setup-java@v4
       with:
         java-version: '17'
         distribution: temurin
